@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Made It! Let the Celebration Begin!</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Cute Handwriting Font (Caveat) -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'soft-pink': '#FEE2E9',
+                        'berry': '#DC266D',
+                        'sunshine': '#FACC15',
+                        'sky-blue': '#93C5FD',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-15px) rotate(2deg)' },
+                        },
+                        spin: {
+                            to: { transform: 'rotate(360deg)' },
+                        },
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.5)', opacity: '0' },
+                            '60%': { transform: 'scale(1.1)', opacity: '1' },
+                            '100%': { transform: 'scale(1)', opacity: '1' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        pulse_button: {
+                            '0%, 100%': { 'box-shadow': '0 10px 20px rgba(220, 38, 109, 0.5)' },
+                            '50%': { 'box-shadow': '0 15px 30px rgba(220, 38, 109, 0.8)' },
+                        },
+                    },
+                    animation: {
+                        'float-slow': 'float 4s ease-in-out infinite',
+                        'spin-slow': 'spin 10s linear infinite',
+                        'bounce-in': 'bounceIn 0.8s ease-out forwards',
+                        // Staggered Intro Animations
+                        'fade-in-up-1': 'fadeInUp 0.6s ease-out 0.8s forwards', // H1
+                        'fade-in-up-2': 'fadeInUp 0.6s ease-out 1.1s forwards', // H2
+                        'fade-in-up-3': 'fadeInUp 0.6s ease-out 1.4s forwards', // P
+                        'fade-in-up-4': 'fadeInUp 0.6s ease-out 1.7s forwards', // Decorative
+                        'fade-in-up-5': 'fadeInUp 0.6s ease-out 2.0s forwards', // Button
+                        'pulse-button': 'pulse_button 2s infinite ease-in-out',
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #FEE2E9 0%, #FFD1FF 100%); /* Soft gradient background */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+
+        .handwriting-font {
+            font-family: 'Caveat', cursive;
+        }
+
+        .celebration-card {
+            background-color: white;
+            border-radius: 32px;
+            padding: 4rem 2rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            opacity: 0; /* Hidden for initial animation */
+        }
+
+        /* SVG Cake Icon Styling */
+        .cake-icon {
+            display: inline-block;
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1.5rem;
+        }
+
+        .animated-element {
+            opacity: 0; /* Start hidden */
+            transform: translateY(20px); /* Start low */
+        }
+
+        .next-page-button {
+            background-image: linear-gradient(45deg, #DC266D 0%, #FF85A2 100%); /* Berry to Lighter Pink */
+            color: white;
+            font-weight: bold;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px; 
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 10px 20px rgba(220, 38, 109, 0.3);
+            animation: pulse-button 2s infinite ease-in-out;
+            margin-top: 2rem;
+        }
+        .next-page-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(220, 38, 109, 0.5);
+            filter: brightness(1.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .celebration-card {
+                padding: 3rem 1.5rem;
+            }
+            .handwriting-font {
+                font-size: 3.5rem !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="card" class="celebration-card animate-bounce-in">
+        
+        <!-- Animated Cake Icon -->
+        <div class="cake-icon mx-auto animate-spin-slow text-berry">
+            <!-- Inline SVG for a simplified birthday cake icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18 10h1.5a.5.5 0 01.5.5V11a1 1 0 01-1 1h-1a1 1 0 01-1-1v-.5a.5.5 0 01.5-.5zM6 10H4.5a.5.5 0 00-.5.5V11a1 1 0 001 1h1a1 1 0 001-1v-.5a.5.5 0 00-.5-.5z" />
+                <path fill-rule="evenodd" d="M3.5 17a.5.5 0 01.5-.5h16a.5.5 0 01.5.5v1a.5.5 0 01-.5.5H4a.5.5 0 01-.5-.5v-1zm1 2.5a.5.5 0 000 1h15a.5.5 0 000-1H4.5zM12 18.25a.75.75 0 01.75-.75h.5a.75.75 0 010 1.5h-.5a.75.75 0 01-.75-.75z" clip-rule="evenodd" />
+                <path d="M12 21a2 2 0 002-2h-4a2 2 0 002 2z" />
+                <path d="M19 14.5a.5.5 0 00.5-.5V13a1 1 0 00-1-1h-1a1 1 0 00-1 1v.5a.5.5 0 00.5.5h2zm-12 0a.5.5 0 00.5-.5V13a1 1 0 00-1-1H5a1 1 0 00-1 1v.5a.5.5 0 00.5.5h2zM12 3a1.5 1.5 0 00-1.5 1.5V6h3V4.5A1.5 1.5 0 0012 3zM10.5 6a1 1 0 001 1h1a1 1 0 001-1h-3z" />
+                <path fill="#FACC15" d="M12 4.5a.5.5 0 011 0v1a.5.5 0 01-1 0v-1z"/> <!-- Candle Flame -->
+            </svg>
+        </div>
+
+        <h1 class="handwriting-font text-6xl text-berry mb-2 drop-shadow-lg animated-element animate-fade-in-up-1" style="line-height: 1.1;">
+            It's a Special Day For You
+        </h1>
+        
+        <h2 class="text-4xl font-extrabold text-gray-700 mb-6 animated-element animate-fade-in-up-2">
+            Time to Celebrate Yayyy!
+        </h2>
+
+        <p class="text-xl text-gray-500 mb-8 max-w-sm mx-auto animated-element animate-fade-in-up-3">
+            This moment is all yours as My cuttu is turning 18 from this day.
+        </p>
+
+        <!-- Decorative Elements -->
+        <div class="flex justify-center space-x-6 text-2xl text-sunshine animated-element animate-fade-in-up-4">
+            <span class="animate-float-slow" style="animation-delay: 0s;">🥳</span>
+            <span class="animate-float-slow" style="animation-delay: -1.5s;">🎈</span>
+            <span class="animate-float-slow" style="animation-delay: -3s;">⭐</span>
+        </div>
+
+        <!-- Next Page Button -->
+        <button id="nextPageButton" class="next-page-button animated-element animate-fade-in-up-5 flex items-center justify-center mx-auto space-x-2">
+            <span>Next Page</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Get the button element
+        const nextPageButton = document.getElementById('nextPageButton');
+
+        // Add a click event listener
+        nextPageButton.addEventListener('click', () => {
+            // Define the filename for the next page
+            const nextPageUrl = 'final_birthday_page.html';
+
+            // Navigate to the next page in the same window
+            console.log('Redirecting to: ' + nextPageUrl);
+            window.location.href = nextPageUrl;
+        });
+
+        // Add the font source (ensures it's loaded if not already)
+        document.head.insertAdjacentHTML('beforeend', '<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">');
+    </script>
+
+</body>
+</html>

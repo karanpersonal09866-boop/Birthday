@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack the Custom Target! (FAST)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+        /* Custom Cursor for Hammer Effect */
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffecf3, #f3e8ff); /* Soft gradient background */
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Using 'pointer' as a safe, visible cursor in canvas environment */
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><text x="15" y="30" font-size="28" fill="%234A0080">🔨</text></svg>') 20 20, pointer;
+            user-select: none;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .hole {
+            background: #a78bfa; /* Purple soil/dirt */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            box-shadow: inset 0 10px 15px rgba(0, 0, 0, 0.3), 0 5px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        
+        /* The target element pops up from the bottom */
+        .target-element {
+            position: absolute;
+            bottom: -100px; /* Start hidden below the hole */
+            /* Faster transition for speed mode */
+            transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            pointer-events: none; /* Ignore clicks until visible */
+            filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+            text-align: center;
+        }
+
+        .target-photo {
+            /* INCREASED SIZE: Fills almost the entire 120px hole */
+            width: 115px; 
+            height: 115px; 
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #f97316; /* Orange border for visibility */
+            display: block;
+        }
+
+        .target-message {
+            color: #fff;
+            background: rgba(220, 38, 38, 0.85); /* Red background for attention */
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 14px;
+            width: 150px;
+            margin-top: -50px; /* Adjust position for text */
+            z-index: 10;
+        }
+
+        .hole.up .target-element {
+            transform: translateY(-85px); /* Move 85px up into view */
+            pointer-events: auto; /* Enable clicks when visible */
+        }
+        
+        /* Button style */
+        .game-button {
+            transition: all 0.1s ease-out;
+            box-shadow: 0 4px #c084fc;
+        }
+        .game-button:active {
+            box-shadow: 0 0 #c084fc;
+            transform: translateY(4px);
+        }
+    </style>
+</head>
+<body onload="initGame()">
+
+    <!-- Game Container -->
+    <div class="bg-white p-6 md:p-10 rounded-3xl shadow-2xl max-w-2xl w-full mx-4 border-8 border-pink-300">
+        
+        <h1 class="text-4xl font-extrabold text-center text-purple-600 mb-6 border-b-4 border-dashed border-purple-200 pb-3">
+            The Whack Challenge! (SPEED MODE) 💨
+        </h1>
+
+        <div class="flex justify-between items-center text-xl font-bold mb-8 p-4 bg-yellow-100 rounded-xl shadow-inner">
+            <div class="text-gray-700">Score: <span id="score" class="text-green-600 ml-2">0</span></div>
+            <div class="text-gray-700">Time Left: <span id="timeLeft" class="text-red-600 ml-2">30</span>s</div>
+        </div>
+
+        <div class="game-grid mx-auto" id="gameGrid">
+            <!-- Hole elements will be dynamically managed by JS -->
+            <div class="hole" data-hole="0"></div>
+            <div class="hole" data-hole="1"></div>
+            <div class="hole" data-hole="2"></div>
+            <div class="hole" data-hole="3"></div>
+            <div class="hole" data-hole="4"></div>
+            <div class="hole" data-hole="5"></div>
+            <div class="hole" data-hole="6"></div>
+            <div class="hole" data-hole="7"></div>
+            <div class="hole" data-hole="8"></div>
+        </div>
+
+        <div class="text-center mt-8">
+            <button id="startButton" class="game-button bg-purple-500 hover:bg-purple-600 text-white text-2xl px-8 py-4 rounded-full font-extrabold" onclick="startGame()">
+                START GAME
+            </button>
+            <p id="gameMessage" class="mt-4 text-lg font-semibold text-gray-600 hidden">Time to show off your speed!</p>
+        </div>
+
+        <div class="flex justify-center mt-6 gap-4">
+            <a id="nextPageButton" href="page_seven.html" 
+                class="hidden game-button bg-pink-500 hover:bg-pink-600 text-white text-xl px-6 py-3 rounded-full font-extrabold"
+                style="box-shadow: 0 4px #ec4899;">
+                Next Page of Fun! ➡️
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Global Variables
+        let score = 0;
+        let timeLeft = 30;
+        let lastHole;
+        let timeUp = false;
+        let gameTimer;
+        const holes = document.querySelectorAll('.hole');
+        const scoreDisplay = document.getElementById('score');
+        const timeLeftDisplay = document.getElementById('timeLeft');
+        const startButton = document.getElementById('startButton');
+        const gameMessage = document.getElementById('gameMessage');
+        const nextPageButton = document.getElementById('nextPageButton');
+        const gameGrid = document.getElementById('gameGrid');
+        
+        // Target element HTML template
+        const photoTargetHTML = `
+            <div class="target-element" data-type="photo">
+                <img src="whack.png" 
+                    onerror="this.src='https://placehold.co/100x100/ffc0cb/000000?text=ADD+PHOTO';" 
+                    alt="Target Photo" 
+                    class="target-photo">
+            </div>
+        `;
+        
+        const messageTargetHTML = `
+            <div class="target-element target-message" data-type="message">
+                Will you hit me? 😭
+            </div>
+        `;
+
+        // --- Utility Functions ---
+
+        function randomTime(min, max) {
+            return Math.round(Math.random() * (max - min) + min);
+        }
+
+        function randomHole(holes) {
+            const index = Math.floor(Math.random() * holes.length);
+            const hole = holes[index];
+            if (hole === lastHole) {
+                return randomHole(holes);
+            }
+            lastHole = hole;
+            return hole;
+        }
+
+        /**
+         * Cleans up the hole and inserts the standard photo target element.
+         * @param {HTMLElement} hole - The hole element to clean.
+         */
+        function resetHole(hole) {
+            hole.classList.remove('up');
+            // Ensure the hole only contains the photo target element for cleanup
+            hole.innerHTML = photoTargetHTML;
+        }
+
+
+        // --- Core Game Logic Functions ---
+
+        /**
+         * Makes a target (photo or text) pop up from a random hole.
+         */
+        function peep() {
+            // TARGET TIME: 800ms to 1200ms (0.8s to 1.2s)
+            const time = randomTime(800, 1200); 
+            const hole = randomHole(holes);
+            
+            // 20% chance to show the crying text message instead of the photo target
+            const showMessage = Math.random() < 0.2; 
+            
+            // 1. Clean up and insert the correct target type
+            if (showMessage) {
+                hole.innerHTML = messageTargetHTML;
+            } else {
+                hole.innerHTML = photoTargetHTML;
+            }
+            
+            // 2. Target appears (moves 'up' via CSS transition)
+            hole.classList.add('up'); 
+
+            // 3. Set a timer for the target to disappear
+            setTimeout(() => {
+                hole.classList.remove('up');
+                
+                // Only queue the next peep if the game is still active
+                if (!timeUp) {
+                    peep();
+                } 
+                // Reset the hole content after it's hidden to ensure a clean state for the next peep
+                resetHole(hole); 
+            }, time);
+        }
+
+        /**
+         * Handles the click event on a hole.
+         * @param {Event} e - The click event.
+         */
+        function bonk(e) {
+            // Check if the click occurred on a target element (photo or message)
+            const targetElement = e.target.closest('.target-element');
+            if (!targetElement) return; 
+
+            const hole = targetElement.parentElement;
+            
+            // Check if the target is currently up
+            if (hole.classList.contains('up')) {
+                
+                // If it's the photo target, score a point
+                if (targetElement.dataset.type === 'photo') {
+                    score++;
+                    scoreDisplay.textContent = score;
+                } 
+                // If it's the message target, no points are scored, but it still disappears
+                
+                // Immediately hide the target
+                hole.classList.remove('up'); 
+                
+                // Add a temporary "hit" effect (e.g., flash the color)
+                hole.style.backgroundColor = '#6d28d9';
+                setTimeout(() => {
+                    hole.style.backgroundColor = '#a78bfa';
+                }, 100);
+            }
+        }
+
+        /**
+         * Starts the game countdown.
+         */
+        function countdown() {
+            gameTimer = setInterval(() => {
+                timeLeft--;
+                timeLeftDisplay.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(gameTimer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // --- Game Flow Functions ---
+
+        /**
+         * Initializes event listeners on game start.
+         */
+        function initGame() {
+            gameGrid.addEventListener('click', bonk);
+            nextPageButton.classList.add('hidden');
+            // Ensure all holes are reset to the photo element initially
+            holes.forEach(resetHole);
+        }
+
+        /**
+         * Resets and starts the game.
+         */
+        function startGame() {
+            // Reset state
+            timeUp = false;
+            score = 0;
+            timeLeft = 30;
+            scoreDisplay.textContent = score;
+            timeLeftDisplay.textContent = timeLeft;
+            gameMessage.textContent = "Speed Mode Activated! Ready your hammer!";
+            gameMessage.classList.remove('hidden', 'text-green-600', 'text-red-600', 'font-extrabold', 'text-2xl');
+            gameMessage.classList.add('text-gray-600', 'text-lg');
+            startButton.disabled = true;
+            startButton.textContent = "Whack Away!";
+            nextPageButton.classList.add('hidden');
+            holes.forEach(resetHole); // Clear any lingering pop-ups
+
+            // Start timer and target popping
+            countdown();
+            peep();
+        }
+
+        /**
+         * Ends the game and displays the final score.
+         */
+        function endGame() {
+            timeUp = true;
+            startButton.disabled = false;
+            startButton.textContent = "PLAY AGAIN?";
+            nextPageButton.classList.remove('hidden');
+            
+            // Display final message
+            gameMessage.classList.remove('hidden', 'text-gray-600', 'text-lg');
+            gameMessage.classList.add('font-extrabold', 'text-2xl');
+            
+            if (score > 25) {
+                gameMessage.textContent = `Time's up! You scored ${score} points! You crushed Speed Mode! 🏆`;
+                gameMessage.classList.add('text-green-600');
+            } else {
+                // FIXED: Added the missing closing backtick here
+                gameMessage.textContent = `Game Over! You scored ${score} points. aaaaaa bohott maara!😭`; 
+                gameMessage.classList.add('text-red-600');
+            }
+        }
+
+    </script>
+</body>
+</html>

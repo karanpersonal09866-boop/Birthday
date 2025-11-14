@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Cute Animated Letter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+
+        /* Custom Floating Animation */
+        @keyframes float {
+            0% { transform: translatey(0px) rotate(0deg); }
+            50% { transform: translatey(-25px) rotate(2deg); }
+            100% { transform: translatey(0px) rotate(0deg); }
+        }
+        
+        /* Subtle Color Pulse for some elements */
+        @keyframes pulse-color {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+
+        /* Bounce for the main card */
+        @keyframes bounce-in {
+            0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+            60% { transform: scale(1.03) rotate(2deg); opacity: 1; }
+            80% { transform: scale(0.98) rotate(-1deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        
+        /* Button Pop Animation */
+        @keyframes pop {
+            0% { transform: scale(0.9); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            /* Extra soft, marshmallow-like gradient */
+            background: linear-gradient(135deg, #fff7ed, #f3e8ff, #ffecf3); 
+            min-height: 100vh;
+            /* Allow content to scroll if it exceeds viewport height */
+            /* Removed flex centering for scrollability */
+            padding: 40px 20px; /* Added vertical padding for breathing room */
+            position: relative; /* Needed for z-index context */
+        }
+
+        .floating-element {
+            animation: float 8s ease-in-out infinite;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.05));
+        }
+        
+        .color-pulse {
+             animation: pulse-color 10s linear infinite;
+        }
+
+        .card-animation {
+            animation: bounce-in 1.2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            z-index: 10; /* Ensure card stays above floating elements */
+            position: relative;
+        }
+
+        .letter-card {
+            /* Cute layered border effect using box-shadow */
+            box-shadow: 0 0 0 8px #fbcfe8, /* Inner pink border */
+                        0 0 0 12px #fef3c7, /* Outer cream border */
+                        0 25px 50px -12px rgba(0, 0, 0, 0.25); /* Main shadow */
+        }
+        
+        .letter-content {
+            line-height: 1.75;
+            text-align: left;
+        }
+
+        /* Ensure card has margins for centering and breathing room */
+        .card-container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Animated Decorative Elements (Increased Emojis) -->
+    <div class="floating-element absolute top-8 left-8 text-5xl text-pink-500" style="animation-delay: 0s;">💖</div>
+    <div class="floating-element absolute top-1/4 right-1/4 text-4xl text-yellow-400" style="animation-delay: 3s;">⭐</div>
+    <div class="floating-element absolute bottom-16 right-12 text-6xl text-purple-400" style="animation-delay: 6s;">🎀</div>
+    <div class="floating-element absolute bottom-8 left-1/4 text-5xl text-blue-300" style="animation-delay: 1s;">☁️</div>
+    <div class="floating-element absolute top-1/3 left-10 text-3xl text-red-400" style="animation-delay: 4s;">🍓</div>
+    <div class="floating-element absolute bottom-1/4 right-1/3 text-4xl text-green-300" style="animation-delay: 2s;">🌼</div>
+    <div class="floating-element absolute top-20 right-20 text-5xl text-yellow-600 color-pulse" style="animation-delay: 5s;">✨</div>
+    <div class="floating-element absolute bottom-4 left-40 text-4xl" style="animation-delay: 7s;">🐻</div>
+
+    <!-- Main Letter Card -->
+    <!-- Added 'mx-auto' (margin-left: auto; margin-right: auto;) for horizontal centering -->
+    <div class="card-animation letter-card card-container max-w-xl bg-white p-8 md:p-12 rounded-[3rem] text-gray-700 backdrop-blur-sm bg-opacity-95 transform scale-0 rotate-0">
+        
+        <!-- Letter Icon with a little bounce -->
+        <div class="text-7xl mb-6 text-center animate-bounce duration-500">
+            <span class="inline-block transform hover:scale-110 transition duration-150">💌</span>
+        </div>
+        
+        <!-- Placeholder Date -->
+        <p class="text-sm text-gray-500 mb-6 text-right">
+            November 18, 2025
+        </p>
+
+        <!-- Greeting -->
+        <h1 class="text-3xl font-extrabold text-pink-500 mb-6 border-b-2 border-dashed border-pink-200 pb-2">
+            Hellooo my Dearest Princess👋
+        </h1>
+
+        <!-- Letter Body Content -->
+        <div class="letter-content text-lg">
+            <p class="mb-4">
+                Today isn’t just your birthday… it’s the day the world got the girl who would one day become my favourite person. The girl whose smile feels like home. The girl whose voice can calm any storm inside me.
+            </p>
+            <p class="mb-4">
+                We’ve been 3 months and 16 days together,
+                
+            </p>
+            <p class="mb-4">
+                We've shared 309 good morning texts,
+            </p>
+            <p class="mb-4">
+                laughed at 500+ silly moments,
+            </p>
+            <p class="mb-4">
+                and created countless memories that I never want to forget.
+                And yet… with you, even forever feels an hour.
+            </p>
+
+
+            <p class="mb-4">
+                You’re turning 18 today, a new smile, a new chapter, a new you.
+                And I feel lucky that I get to stand beside you in it.
+                Lucky that I get to call you my cuttu, guddu, golgappe, rasmalai, and uncountable many more.
+                Lucky that you choose me every day in your own soft, cute ways.
+            </p>
+            <p class="mb-8">
+                Thank you for coming into my life.
+                Thank you for being gentle, chaotic, adorable, loving — all at once.
+                Thank you for making me feel chosen in a world full of people.
+            </p>
+            <p class="mb-8">
+                I don’t know what life has planned for us,
+                but I can assure you that this feeling for you will never disappear in my whole lifespan.
+                The time I get with you will always be the favourite part of my life.
+            </p>
+            <p class="mb-8">
+                Happy 18th, my princess.
+                You are the best thing this year gave me.
+                And maybe… the best thing my life ever will.
+            </p>
+        </div>
+
+        <!-- Closing and Signature -->
+        <p class="text-pink-500 font-extrabold text-right mt-8">
+            Lots and Lots of Love,
+        </p>
+        <p class="text-2xl font-extrabold text-right italic text-purple-600 mt-2">
+            ~ Your Battamiz Aadmi, your hubby 💖
+        </p>
+        
+        <!-- Next Page Button -->
+        <div class="mt-10 pt-4 border-t border-dashed border-pink-300 text-center">
+            <a href="page_six.html" 
+                class="inline-flex items-center justify-center 
+                        bg-red-400 text-white font-bold 
+                        px-6 py-3 rounded-full shadow-lg 
+                        hover:bg-red-500 transform hover:scale-105 
+                        transition duration-300 ease-in-out 
+                        text-lg"
+                style="animation: pop 0.5s ease-out;">
+                Lets Play a game! 🎁
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
